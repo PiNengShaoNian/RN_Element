@@ -15,3 +15,10 @@ export const px2dp = size => {
 
   return size / DEFAULT_DENSITY
 }
+
+export const wh = (w, h = w) => {
+  return {
+    width: px2dp(w),
+    height: px2dp(h)
+  }
+}
