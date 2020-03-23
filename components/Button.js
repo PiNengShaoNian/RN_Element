@@ -1,0 +1,97 @@
+import React, { memo } from 'react'
+import { StyleSheet } from 'react-native'
+import PropTypes from 'prop-types'
+import { TouchableOpacity } from 'react-native-gesture-handler'
+
+const Button = memo(
+  ({
+    style,
+    title,
+    titleStyle,
+    activeOpacity,
+    disabled,
+    children,
+    ...others
+  }) => {
+    let backgroundColor,
+      borderColor,
+      borderWidth,
+      borderRadius,
+      paddingVertical,
+      paddingHorizontal
+    let textColor, textFontSize
+    //button default props
+    activeOpacity = 0.8
+    borderWidth = 0
+    borderRadius = 0
+    borderColor = Color.theme
+    paddingVertical = 0
+    paddingHorizontal = 0
+    backgroundColor = Color.theme
+    //title default props
+    textColor = Color.white
+    textFontSize = 14
+
+    style = [
+      {
+        backgroundColor,
+        borderColor,
+        borderWidth,
+        borderRadius,
+        paddingVertical: paddingVertical,
+        paddingHorizontal: paddingHorizontal,
+        overflow: 'hidden',
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center'
+      }
+    ].concat(style)
+    style = StyleSheet.flatten(style)
+    if (disabled) {
+      style.opacity = 0.4
+    }
+
+    if (
+      !React.isValidElement(title) &&
+      (title || title === '' || title === 0)
+    ) {
+      titleStyle = [
+        {
+          color: textColor,
+          fontSize: textFontSize,
+          overflow: 'hidden'
+        }
+      ].concat(titleStyle)
+
+      title = (
+        <Text style={titleStyle} numberOfLines={1}>
+          {title}
+        </Text>
+      )
+
+      if (title) children = title
+
+      return (
+        <TouchableOpacity
+          style={style}
+          title={title}
+          titleStyle={titleStyle}
+          activeOpacity={activeOpacity}
+          disabled={disabled}
+          children={children}
+          {...others}
+        />
+      )
+    }
+  }
+)
+
+Button.propTypes = {
+  title: PropTypes.oneOfType([
+    PropTypes.element,
+    PropTypes.string,
+    PropTypes.number
+  ])
+}
+
+export default Button

@@ -1,4 +1,4 @@
-import React, { useRef, useMemo, useState, useEffect } from 'react'
+import React, { useRef, useMemo, useState, useEffect, useCallback } from 'react'
 import { StatusBar, Image, View } from 'react-native'
 import { FlatList, TouchableOpacity } from 'react-native-gesture-handler'
 
@@ -7,6 +7,9 @@ import DropdownMenu from '../components/DropdownMenu'
 import NavigationBar from '../components/NavigationBar'
 import Row from '../components/Row'
 import Text from '../components/Text'
+import Button from '../components/Button'
+import Divider from '../components/Divider'
+import ShopListItem from '../components/ShopListItem'
 import { colors, images } from '../constants'
 import { screenW, px2dp, wh } from '../utils/screen'
 
@@ -17,12 +20,22 @@ import {
 } from '../api/food'
 import { fetchShopList } from '../api/location'
 
-const Category = ({ route }) => {
+const list = [
+  '智能排序',
+  '距离最近',
+  '销量最高',
+  '起送价最低',
+  '配送速度最快',
+  '评分最高'
+]
+
+const Category = ({ route, navigation }) => {
   const spinner = useRef()
   const [cateogry, setCategory] = useState([])
   const [delivery, setDelivery] = useState([])
   const [activity, setActivity] = useState([])
   const [shop, setShop] = useState([])
+  const [cateogryChild, setCateogryChild] = useState([])
 
   const {
     params: { data, latitude, longitude }
@@ -32,8 +45,22 @@ const Category = ({ route }) => {
     return [data.title, '排序', '筛选']
   }, [data])
 
+  const onCategoryItemClick = useCallback(() => {
+    setCateogryChild(item.sub_categories.slice())
+  }, [])
+
+  const onItemClick = useCallback(item => {
+    spinner.current.updateCurrentLabel(item)
+    spinner.current.hide()
+  }, [])
+
+  const onShopItemClick = useCallback(item => {
+    navigation.navigate('ShopInfo', { id: item.id })
+  })
+
   useEffect(() => {
     fetchFoodCategory(latitude, longitude).then(res => {
+      setCateogryChild(res[0].sub_categories)
       setCategory(res)
     })
 
@@ -73,10 +100,113 @@ const Category = ({ route }) => {
             style={{ width: screenW / 2 }}
             data={cateogry}
             bounces={false}
+            keyExtractor={(item, index) => index + ''}
+            renderItem={CategoryItem}
+            onPress={onCategoryItemClick}
+          />
+
+          <FlatList
+            style={{ width: screenW / 2 }}
+            data={cateogryChild}
+            bounces={false}
+            keyExtractor={(_, index) => index + ''}
+            ItemSeparatorComponent={() => <Divider />}
             renderItem={CategoryItem}
           />
         </Row>
+        <FlatList
+          style={{ width: screenW, backgroundColor: colors.white }}
+          data={list}
+          bounces={false}
+          numColumns={3}
+          keyExtractor={index => index + ''}
+          ItemSeparatorComponent={() => <Divider />}
+          renderItem={({ item, index }) => (
+            <TouchableOpacity
+              activeOpacity={0.8}
+              onPress={() => onItemClick(item, index)}
+            >
+              <Row
+                verticalCenter
+                style={{
+                  justifyContent: 'space-between',
+                  paddingHorizontal: 20,
+                  paddingVertical: 10
+                }}
+              >
+                <Text text={item} />
+              </Row>
+              <Column style={{ width: screenW, backgroundColor: colors.white }}>
+                <Text text="配送方式" style={{ margin: px2dp(10) }} />
+                <FlatList
+                  data={delivery}
+                  bounces={false}
+                  numColumns={3}
+                  keyExtractor={(_, index) => index + ''}
+                  renderItem={({ item }) => (
+                    <Row verticalCenter style={{ width: screenW / 3 }}>
+                      <Text
+                        microSize
+                        text={item.icon_name}
+                        style={{ color: item.icon_color }}
+                      />
+                      <Text microSize text={item.name} />
+                    </Row>
+                  )}
+                />
+                <Text
+                  text="商家属性（可以多选）"
+                  style={{ margin: px2dp(10) }}
+                />
+                <FlatList
+                  data={activity}
+                  bounces={false}
+                  numColumns={3}
+                  keyExtractor={(_, index) => index + ''}
+                  renderItem={({ item }) => (
+                    <Row verticalCenter style={{ width: screenW / 3 }}>
+                      <Text
+                        microSize
+                        text={item.icon_name}
+                        style={{ color: item.icon_color }}
+                      />
+                      <Text microSize text={item.name} />
+                    </Row>
+                  )}
+                />
+                <Row style={{ backgroundColor: colors.background }}>
+                  <Button
+                    onPress={() => null}
+                    title="清空"
+                    titleStyle={{ fontSize: px2dp(26), color: colors.black }}
+                    style={{ flex: 1, height: px2dp(80) }}
+                  />
+                  <Button
+                    onPress={() => null}
+                    title="确定"
+                    titleStyle={{ fontSize: px2dp(26), color: colors.white }}
+                    style={{
+                      flex: 1,
+                      height: px2dp(80),
+                      margin: px2dp(10),
+                      borderRadius: px2dp(10),
+                      backgroundColor: colors.reseda
+                    }}
+                  />
+                </Row>
+              </Column>
+            </TouchableOpacity>
+          )}
+        />
       </DropdownMenu>
+
+      <FlatList
+        style={{ flex: 1 }}
+        data={shop}
+        renderItem={({ item }) => (
+          <ShopListItem data={item} onPress={() => onShopItemClick(item)} />
+        )}
+      />
     </Column>
   )
 }
