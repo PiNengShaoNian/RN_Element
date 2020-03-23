@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useMemo, memo } from 'react'
 import {
   SafeAreaView,
   StyleSheet,
@@ -8,19 +8,45 @@ import {
   Platform,
   StatusBar
 } from 'react-native'
+import { TouchableOpacity } from 'react-native-gesture-handler'
 
 import { colors } from '../constants'
 import { px2dp } from '../utils/screen'
 import Visible from './Visible'
+import { images } from '../constants'
+import { wh } from '../utils/screen'
+
+const GoBack = memo(({ onPress, goBackColor }) => (
+  <TouchableOpacity
+    onPress={() => {
+      onPress && onPress()
+    }}
+  >
+    <View style={{ paddingVertical: px2dp(26), paddingHorizontal: px2dp(30) }}>
+      <Image
+        style={{
+          ...wh(20, 30),
+          tintColor: goBackColor,
+          justifyContent: 'center',
+          alignItems: 'center',
+          resizeMode: 'stretch'
+        }}
+        source={images.Common.goBack}
+      />
+    </View>
+  </TouchableOpacity>
+))
 
 export default NavigationBar = ({
   dividerVisible = false,
   navBarImage,
   title,
-  goBackVisible,
-  titleColor = colors.black,
+  goBackColor = null,
+  goBackVisible = true,
+  titleColor = colors.white,
   leftItem,
-  rightItem
+  rightItem = null,
+  onGoBackPress
 }) => {
   const divider = dividerVisible
     ? {
@@ -60,7 +86,11 @@ export default NavigationBar = ({
           )}
 
           {goBackVisible ? (
-            <View style={{ position: 'absolute', left: 0 }}>{leftItem}</View>
+            <View style={{ position: 'absolute', left: 0 }}>
+              {leftItem || (
+                <GoBack onPress={onGoBackPress} goBackColor={goBackColor} />
+              )}
+            </View>
           ) : null}
 
           <View style={{ position: 'absolute', right: 0 }}>{rightItem}</View>

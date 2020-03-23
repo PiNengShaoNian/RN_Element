@@ -25,7 +25,7 @@ export default RefreshListView = ({
   onHeaderRefresh,
   ...rest
 }) => {
-  console.log({ refreshState })
+  
   return (
     <FlatList
       ref={listRef}
