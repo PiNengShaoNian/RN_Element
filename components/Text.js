@@ -18,6 +18,10 @@ export default Text = ({ style, text, children, ...others }) => {
     color = colors.red
   }
 
+  if (style && style.color && style.color.charAt(0) !== '#') {
+    style.color = `#${style.color}`
+  }
+
   let fontSize = px2dp(28)
   if (others.largeSize) {
     fontSize = px2dp(30)

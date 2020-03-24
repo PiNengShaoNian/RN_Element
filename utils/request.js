@@ -2,6 +2,8 @@ import qs from 'query-string'
 
 const baseUrl = 'http://cangdu.org:8001'
 
+const whitelist = ['/shopping/restaurant/']
+
 const timeoutFetch = (p, timeout = 10000) => {
   let timeoutFn
   const timeoutPromise = new Promise((resolve, reject) => {
@@ -51,7 +53,7 @@ const baseRequest = (method, url, params = '', isFormData = false) => {
           }
         })
         .then(res => {
-          if (res.status === 0) {
+          if (res.status === 0 && whitelist.every(v => !url.includes(v))) {
             reject(res)
           } else {
             resolve(res)

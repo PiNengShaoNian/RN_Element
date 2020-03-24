@@ -5,7 +5,8 @@ import React, {
   useRef,
   useCallback,
   useState,
-  useMemo
+  useMemo,
+  useEffect
 } from 'react'
 import PropTypes from 'prop-types'
 import {
@@ -17,11 +18,13 @@ import {
   StatusBar,
   Easing,
   Animated,
-  Modal
+  Modal,
+  Button,
+  TouchableWithoutFeedback
 } from 'react-native'
 import {
-  TouchableOpacity,
-  TouchableWithoutFeedback
+  TouchableOpacity
+  // TouchableWithoutFeedback
 } from 'react-native-gesture-handler'
 
 const width = Dimensions.get('window').width
@@ -81,7 +84,14 @@ const TabItem = memo(
 const DropdownMenu = memo(
   forwardRef(
     (
-      { tabData, tabSelectColor, tabUnSelectColor, arrowImg, children },
+      {
+        tabData,
+        tabSelectColor,
+        tabUnSelectColor,
+        arrowImg,
+        children,
+        contentHeight
+      },
       ref
     ) => {
       const tab = useRef()
@@ -98,6 +108,10 @@ const DropdownMenu = memo(
         [activeIndex, tabSelectColor, tabUnSelectColor]
       )
 
+      const show = useCallback(() => {
+        setContentVisible(true)
+      }, [])
+
       const onTabItemClick = useCallback(
         async index => {
           if (tabTop === 0) {
@@ -113,6 +127,7 @@ const DropdownMenu = memo(
               hide()
             } else {
               setActiveIndex(index)
+              show()
             }
           }
         },
@@ -161,7 +176,7 @@ const DropdownMenu = memo(
         })
 
         if (activeIndex !== -1) createArrowAnimation(0)
-      }, [])
+      }, [activeIndex, createAnimation, createFade, contentAnimated])
 
       const rotationAnims = useMemo(() => {
         return Array.from(
@@ -169,6 +184,29 @@ const DropdownMenu = memo(
           () => new Animated.Value(0)
         )
       }, [tabData])
+
+      useImperativeHandle(
+        ref,
+        () => ({
+          hide
+        }),
+        [hide]
+      )
+      useEffect(() => {
+        if (contentVisible) {
+          Animated.parallel([
+            createAnimation(contentHeight),
+            createFade(1)
+          ]).start()
+          createArrowAnimation(0.5)
+        }
+      }, [
+        contentVisible,
+        contentHeight,
+        createAnimation,
+        createFade,
+        createArrowAnimation
+      ])
 
       return (
         <View>
@@ -193,6 +231,7 @@ const DropdownMenu = memo(
             onRequestClose={hide}
           >
             <TouchableWithoutFeedback onPress={hide}>
+              {/* <View style={{ backgroundColor: 'purple', height: 300 }} /> */}
               <View style={styles.modal}>
                 <Animated.View
                   style={[styles.bg, { top: tabTop, opacity: opacityAnimated }]}
@@ -246,5 +285,15 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     paddingVertical: 10
+  },
+  tabTextStyle: {
+    marginRight: 5
+  },
+  modal: {
+    flex: 1
+  },
+  bg: {
+    flex: 1,
+    backgroundColor: 'rgba(50, 50, 50, 0.2)'
   }
 })

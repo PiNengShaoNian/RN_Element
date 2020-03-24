@@ -3,6 +3,8 @@ import { StyleSheet } from 'react-native'
 import PropTypes from 'prop-types'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 
+import { colors } from '../constants'
+
 const Button = memo(
   ({
     style,
@@ -24,12 +26,12 @@ const Button = memo(
     activeOpacity = 0.8
     borderWidth = 0
     borderRadius = 0
-    borderColor = Color.theme
+    borderColor = colors.theme
     paddingVertical = 0
     paddingHorizontal = 0
-    backgroundColor = Color.theme
+    backgroundColor = colors.theme
     //title default props
-    textColor = Color.white
+    textColor = colors.white
     textFontSize = 14
 
     style = [
@@ -71,6 +73,8 @@ const Button = memo(
 
       if (title) children = title
 
+      console.log(titleStyle)
+
       return (
         <TouchableOpacity
           style={style}
@@ -78,9 +82,10 @@ const Button = memo(
           titleStyle={titleStyle}
           activeOpacity={activeOpacity}
           disabled={disabled}
-          children={children}
           {...others}
-        />
+        >
+          {children}
+        </TouchableOpacity>
       )
     }
   }
