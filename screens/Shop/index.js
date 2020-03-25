@@ -127,7 +127,7 @@ const ShopInfo = ({ navigation, route }) => {
       </View>
       <ScrollableTabView renderTabBar={() => <TabBar />}>
         <ShopInfoList shopId={shopId} tabLabel="商品" navigation={navigation} />
-        <Review tabLabel="评价" />
+        <Review tabLabel="评价" shopId={shopId} />
       </ScrollableTabView>
     </Column>
   )
