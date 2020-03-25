@@ -22,6 +22,8 @@ import ScrollableTabView from 'react-native-scrollable-tab-view'
 import Column from '../../components/Column'
 import Text from '../../components/Text'
 import TabBar from '../../components/TabBar'
+import ShopInfoList from './ShopInfoList'
+import Review from './Review'
 import { images } from '../../constants'
 import { screenW, px2dp, wh } from '../../utils/screen'
 import { TouchableOpacity } from 'react-native-gesture-handler'
@@ -125,6 +127,7 @@ const ShopInfo = ({ navigation, route }) => {
       </View>
       <ScrollableTabView renderTabBar={() => <TabBar />}>
         <ShopInfoList shopId={shopId} tabLabel="商品" navigation={navigation} />
+        <Review tabLabel="评价" />
       </ScrollableTabView>
     </Column>
   )

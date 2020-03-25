@@ -1,6 +1,6 @@
 import React, { memo } from 'react'
 import PropTypes from 'prop-types'
-import { View, Animated, StyleSheet } from 'react-native'
+import { View, Animated, StyleSheet, Text } from 'react-native'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 
 const TabBar = memo(
@@ -22,7 +22,8 @@ const TabBar = memo(
     const tabUnderlineStyle = {
       position: 'absolute',
       width: containerWidth / numberOfTabs,
-      bottom: 6,
+      bottom: 0,
+      left: 0,
       justifiyContent: 'center',
       alignItems: 'center'
     }
@@ -30,6 +31,7 @@ const TabBar = memo(
       inputRange: [0, 1],
       outputRange: [0, containerWidth / numberOfTabs]
     })
+
     return (
       <View style={[styles.tabs, { backgroundColor: backgroundColor }, style]}>
         {tabs.map((name, page) => {
@@ -124,6 +126,7 @@ const styles = StyleSheet.create({
     height: 36,
     justifyContent: 'space-around',
     borderBottomColor: '#f1f1f1',
-    borderBottomWidth: 1
+    borderBottomWidth: 1,
+    flexDirection: 'row'
   }
 })

@@ -73,8 +73,6 @@ const Button = memo(
 
       if (title) children = title
 
-      console.log(titleStyle)
-
       return (
         <TouchableOpacity
           style={style}
