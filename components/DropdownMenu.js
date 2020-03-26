@@ -26,6 +26,7 @@ import {
   TouchableOpacity
   // TouchableWithoutFeedback
 } from 'react-native-gesture-handler'
+import { px2dp } from '../utils/screen'
 
 const width = Dimensions.get('window').width
 
@@ -65,6 +66,9 @@ const TabItem = memo(
             style={{
               marginLeft: 4,
               tintColor: color,
+              width: px2dp(20),
+              height: px2dp(20),
+              resizeMode: 'contain',
               transform: [
                 {
                   rotateZ: rotationAnims[index].interpolate({

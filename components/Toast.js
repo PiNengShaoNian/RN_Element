@@ -5,11 +5,12 @@ export default {
     msg,
     config = {
       position: 0,
-      duration: 400,
+      duration: 2000,
       shadow: false,
       amination: true
     }
   ) {
+    console.log('nmsl')
     RN_Toast.show(msg, config)
   }
 }
