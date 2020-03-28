@@ -29,3 +29,12 @@ export const fetchShopRatingList = shopId => {
 
   return request.get(`/ugc/v2/restaurants/${shopId}/ratings`, params)
 }
+
+export const fethcSearchRestaurant = (geohash, keyword) => {
+  return request.get('/v4/restaurants', {
+    'extras[]': 'restaurant_activity',
+    geohash,
+    keyword,
+    type: 'search'
+  })
+}

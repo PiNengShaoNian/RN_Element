@@ -170,6 +170,7 @@ const ItemWithImg = memo(({ label1, label2 }) => {
 })
 
 const Address = memo(({ onPress, address }) => {
+  console.log({ address })
   return (
     <TouchableOpacity onPress={onPress}>
       <Column style={{ backgroundColor: colors.white }}>
@@ -182,7 +183,7 @@ const Address = memo(({ onPress, address }) => {
         >
           <Text text="请选择收货地址" />
         </Row>
-        <Visible visible={address}>
+        <Visible visible={!!address}>
           <Row
             verticalCenter
             style={{
@@ -203,8 +204,12 @@ const Address = memo(({ onPress, address }) => {
               />
               <Column>
                 <Row verticalCenter>
-                  <Text largeSize text="姓名" style={{ fontWeight: '600', marginRight: px2dp(70) }} />
-                  <Text mediumSize text={address.name} />
+                  <Text
+                    largeSize
+                    text="姓名"
+                    style={{ fontWeight: '600', marginRight: px2dp(70) }}
+                  />
+                  <Text mediumSize text={address && address.name} />
                 </Row>
                 <Row verticalCenter>
                   <View
@@ -217,7 +222,7 @@ const Address = memo(({ onPress, address }) => {
                   >
                     <Text smallSize text="详细地址" />
                   </View>
-                  <Text smallSize text={address.address} />
+                  <Text smallSize text={address && address.address} />
                 </Row>
               </Column>
             </Row>

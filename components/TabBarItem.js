@@ -2,6 +2,7 @@ import React from 'react'
 import { StyleSheet, Image, View } from 'react-native'
 
 import { px2dp } from '../utils/screen'
+import { TouchableOpacity } from 'react-native-gesture-handler'
 
 export default TabBarItem = ({
   selectedImage,
@@ -13,7 +14,7 @@ export default TabBarItem = ({
   selectedImage = selectedImage ? selectedImage : normalImage
 
   return (
-    <View style={styles.style}>
+    <View style={styles.container}>
       <Image
         source={focused ? selectedImage : normalImage}
         style={{
@@ -31,7 +32,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    height: px2dp(70),
-    width: px2dp(75)
+    height: px2dp(90),
+    width: px2dp(120)
   }
 })
