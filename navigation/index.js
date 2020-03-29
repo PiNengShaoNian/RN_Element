@@ -15,6 +15,8 @@ import Address from '../screens/Address'
 import AddAddress from '../screens/Address/AddAddress'
 import SearchAddress from '../screens/Address/SearchAddress'
 import UserInfo from '../screens/Home/UserInfo'
+import ModifyUsername from '../screens/Home/ModifyUsername'
+import ModifyPwd from '../screens/Home/ModifyPwd'
 
 const Stack = createStackNavigator()
 
@@ -41,6 +43,8 @@ export default RootStack = () => {
       <Stack.Screen component={AddAddress} name="AddAddress" />
       <Stack.Screen component={SearchAddress} name="SearchAddress" />
       <Stack.Screen component={UserInfo} name="UserInfo" />
+      <Stack.Screen component={ModifyUsername} name="ModifyUsername" />
+      <Stack.Screen component={ModifyPwd} name="ModifyPwd" />
     </Stack.Navigator>
   )
 }

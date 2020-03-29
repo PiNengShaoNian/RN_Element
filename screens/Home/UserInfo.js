@@ -1,4 +1,4 @@
-import React, { memo, useState } from 'react'
+import React, { memo, useState, useCallback, useRef } from 'react'
 import { View, StyleSheet, StatusBar, Image } from 'react-native'
 import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler'
 
@@ -6,12 +6,40 @@ import NavigationBar from '../../components/NavigationBar'
 import Text from '../../components/Text'
 import Row from '../../components/Row'
 import Divider from '../../components/Divider'
+import Button from '../../components/Button'
+import DialogLogout from '../../components/DialogLogout'
 import { images, colors } from '../../constants'
 import { wh, px2dp } from '../../utils/screen'
-import Button from '../../components/Button'
 
-const UserInfo = memo(() => {
+const UserInfo = memo(({ navigation, route }) => {
+  const dialog = useRef()
   const [username, setUsername] = useState(global.userInfo.username)
+
+  const onConfirm = useCallback(() => {
+    global.isLogin = false
+    route.params.callback && route.params.callback()
+
+    navigation.goBack()
+  }, [])
+
+  const onLogout = useCallback(() => {
+    dialog.current.show()
+  }, [])
+
+  const handleModifySuccess = useCallback(name => {
+    setUsername(name)
+  }, [])
+
+  const onItemPress = useCallback((label) => {
+    if (label === '用户名') {
+      navigation.navigate('ModifyUsername', { callback: handleModifySuccess })
+    } else if (label === '收货地址') {
+      navigation.navigate('Address', { choice: false })
+    } else if (label === '登录密码') {
+      navigation.navigate('ModifyPwd', { name: username })
+    }
+  }, [navigation, username, handleModifySuccess])
+
   return (
     <View style={{ flex: 1, backgroundColor: colors.background }}>
       <StatusBar
@@ -30,6 +58,7 @@ const UserInfo = memo(() => {
 
         <Item
           label="头像"
+          onPress={onItemPress}
           view={
             <Image
               source={{
@@ -42,22 +71,37 @@ const UserInfo = memo(() => {
 
         <Divider />
 
-        <Item label="用户名" view={<Text text={username} />} />
+        <Item
+          label="用户名"
+          view={<Text text={username} />}
+          onPress={onItemPress}
+        />
 
         <Divider />
 
-        <Item label="收货地址" />
+        <Item label="收货地址" onPress={onItemPress} />
 
         <Divider />
         <Item2 label="账号绑定" />
         <Item
           label="手机"
           view={<Text text={global.userInfo.mobile} />}
-          img={<Image source={Images.My.phone} style={styles.iconPhoneStyle} />}
+          onPress={onItemPress}
+          img={<Image source={images.My.phone} style={styles.iconPhoneStyle} />}
         />
         <Item2 label="安全设置" />
-        <Item label="登录密码" view={<Text gray text="修改" />} />
-        <Button style={styles.logoutBtnStyle} title="退出登录" onPress={}/>
+        <Item
+          label="登录密码"
+          view={<Text gray text="修改" />}
+          onPress={onItemPress}
+        />
+        <Button
+          style={styles.logoutBtnStyle}
+          title="退出登录"
+          onPress={onLogout}
+        />
+
+        <DialogLogout ref={dialog} onConfirm={onConfirm} />
       </ScrollView>
     </View>
   )
@@ -117,5 +161,16 @@ const styles = StyleSheet.create({
   iconHeadStyle: {
     ...wh(80),
     borderRadius: px2dp(30)
+  },
+  iconPhoneStyle: {
+    ...wh(35),
+    marginRight: px2dp(10),
+    tintColor: colors.theme
+  },
+  logoutBtnStyle: {
+    marginVertical: px2dp(50),
+    marginHorizontal: px2dp(20),
+    borderRadius: px2dp(5),
+    height: px2dp(70)
   }
 })

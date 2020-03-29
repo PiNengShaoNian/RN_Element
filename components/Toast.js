@@ -10,7 +10,6 @@ export default {
       amination: true
     }
   ) {
-    console.log('nmsl')
     RN_Toast.show(msg, config)
   }
 }
